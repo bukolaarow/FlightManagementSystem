@@ -1,8 +1,6 @@
 import sqlite3
 
-def sample_data():
-    conn = sqlite3.connect("FlightManagement.db")
-    cur = conn.cursor()
+def sample_data(cursor,conn):
 
     # Sample Destinations
     destinations = [
@@ -46,13 +44,10 @@ def sample_data():
         ('VA777', 7, 6, 3, '2025-07-12', '13:00', '2025-07-12', '20:00', 'Scheduled', 14000)
     ]
 
-    cur.executemany("INSERT INTO Destination (city, country, airportCode, timeZone, notes) VALUES (?, ?, ?, ?, ?)", destinations)
-    cur.executemany("INSERT INTO Pilot (FirstName, LastName, Rank, LicenseNumber, LicenseExpiry, FlightType, CertifiedAircraftCode, CertificationExpiry, Email, PhoneNumber) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", pilots)
-    cur.executemany("INSERT INTO Flight (flightNumber, pilotID, OriginID, DestinationID, departureDate, departureTime, arrivalDate, arrivalTime, flightStatus, distance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", flights)
-
+    cursor.executemany("INSERT INTO Destination (city, country, airportCode, timeZone, notes) VALUES (?, ?, ?, ?, ?)", destinations)
+    cursor.executemany("INSERT INTO Pilot (FirstName, LastName, Rank, LicenseNumber, LicenseExpiry, FlightType, CertifiedAircraftCode, CertificationExpiry, Email, PhoneNumber) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", pilots)
+    cursor.executemany("INSERT INTO Flight (flightNumber, pilotID, OriginID, DestinationID, departureDate, departureTime, arrivalDate, arrivalTime, flightStatus, distance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", flights)
+    
     conn.commit()
     print("Sample data inserted successfully.")
-    conn.close()
-
-if __name__ == "__main__":
-    sample_data()
+ 

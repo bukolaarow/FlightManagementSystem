@@ -1,4 +1,5 @@
 from services import FlightService
+from sample_data import sample_data
 
 def main():
     service = FlightService()
@@ -22,6 +23,9 @@ def main():
         print("13. View Average Flight Distance per Destination")
         print("14. View Total Distance Flown by Pilot")
         print("15. View Flight Count by Destination")
+        print("16. View All Flights")
+        print("17. Insert sample data ")
+        print("18. Reset Database")
 
         print("0. Exit")
 
@@ -71,6 +75,18 @@ def main():
             
         elif choice == '15':
             service.view_flight_count_by_destination()
+
+        elif choice == '16':
+            service.view_all_flights()
+        
+        elif choice == '17':
+            try:
+                sample_data(service.cursor, service.conn)
+            except Exception as e:
+                print("Error inserting sample data:", e)
+
+        elif choice == '18':
+            service.reset_database()  
 
         elif choice == '0':
             print("Exiting system. Goodbye!")

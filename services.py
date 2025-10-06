@@ -1,6 +1,8 @@
 
 import sqlite3
 
+from tabulate import tabulate
+
 class FlightService:
     def __init__(self):
         """Initializes the database connection and ensures tables are created."""
@@ -254,7 +256,7 @@ class FlightService:
 
     
     def delete_flight_by_number(self):
-            """Deletes a flight record from the database using the flight number."""
+            "Deletes a flight record from the database using the flight number."
             flight_number = input("Enter Flight Number to delete: ")
         # Step 1: Check if the flight exists
             self.cursor.execute("SELECT * FROM Flight WHERE FlightNumber = ?", (flight_number,))
@@ -358,4 +360,33 @@ class FlightService:
         print("-" * 40)
         for row in rows:
             print(f"{row[0]:<20} | {row[1]}")
+
+    def view_all_flights(self) : 
+        "Displays all flights with full details regardless of status." 
+        self.cursor.execute(""" SELECT f.FlightNumber, IFNULL(p.FirstName || ' ' || p.LastName, 'Unassigned') AS Pilot, 
+                            o.City AS Origin, d.City AS Destination, 
+                            f.DepartureDate, f.DepartureTime, 
+                            f.ArrivalDate, f.ArrivalTime, f.FlightStatus 
+                            FROM Flight f 
+                            LEFT JOIN Pilot p ON f.PilotID = p.PilotID 
+                            JOIN Destination o ON f.OriginID = o.DestinationID 
+                            JOIN Destination d ON f.DestinationID = d.DestinationID ORDER BY f.DepartureDate, f.DepartureTime """) 
+        rows = self.cursor.fetchall() 
+        headers = [ "Flight Number", "Pilot", "Origin", "Destination", "Departure Date", "Departure Time", "Arrival Date", "Arrival Time", "Status" ] 
+        if rows: 
+            print("\n========== ALL FLIGHTS ==========\n") 
+            print(tabulate(rows, headers=headers, tablefmt="grid")) 
+        else: print("No flights available.")
+
+    def reset_database(self):
+        " Deletes all data from the tables "
+        try:
+            self.cursor.execute("DELETE FROM Flight")
+            self.cursor.execute("DELETE FROM Pilot")
+            self.cursor.execute("DELETE FROM Destination")
+            self.conn.commit()
+            print("All data deleted from the database.")
+        except Exception as e:
+            print("Error during reset:", e)
+
             
